@@ -1,0 +1,16 @@
+BasedOnStyle: Google
+Language: Cpp
+PackConstructorInitializers: CurrentLine
+ConstructorInitializerAllOnOneLineOrOnePerLine: true
+AllowShortEnumsOnASingleLine: false
+AllowShortBlocksOnASingleLine: false
+AllowShortCaseLabelsOnASingleLine: false
+AllowShortCompoundRequirementOnASingleLine: false
+AllowShortFunctionsOnASingleLine: InlineOnly
+AllowShortIfStatementsOnASingleLine: Never
+AllowShortLambdasOnASingleLine: Empty
+AllowShortLoopsOnASingleLine: false
+BreakConstructorInitializers: BeforeComma
+BreakBeforeBinaryOperators: All
+ColumnLimit: 100
+SortIncludes: false
