@@ -1,6 +1,7 @@
 # Ignore build and bin directories
 /build/
 /bin/
+*/__pycache__/
 
 # Ignore CMake files
 CMakeFiles/
@@ -13,6 +14,7 @@ Makefile
 *.swp
 *.swo
 *.log
+*.lock
 
 # Ignore IDE-specific files (for example, for Visual Studio Code and Visual Studio)
 .vscode/

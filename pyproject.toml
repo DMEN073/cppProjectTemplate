@@ -1,0 +1,24 @@
+[project]
+name = "buildtool"
+version = "0.1.0"
+description = "Build and clean pipeline for CMake"
+authors = [
+    { name = "kaiping", email = "kaiping7895@gmail.com" }
+]
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "click>=8.2.1,<9.0.0"
+]
+
+[project.scripts]
+cmake-tool = "buildtool.build:cli"
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry]
+# Minimal section to keep Poetry happy
+# These two are optional if everything is under [project], but useful for Poetry features
+package-mode = true
