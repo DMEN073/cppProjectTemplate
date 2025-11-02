@@ -6,9 +6,7 @@ project(MyProject VERSION 1.0.0 LANGUAGES CXX)
 # Set the C++ standard
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/bin/${BUILD_TYPE_CACHE})
-set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/lib/${BUILD_TYPE_CACHE})   # static libraries (.a / .lib)
-set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/lib/${BUILD_TYPE_CACHE})   # shared libraries (.so / .dll / .dylib)
+
 # Include directories
 include_directories(${PROJECT_SOURCE_DIR}/include)
 
@@ -17,10 +15,16 @@ message(STATUS "Build type: ${BUILD_TYPE_CACHE}") #this variable is used in msvc
 if(MSVC)
     message(STATUS "Detected compiler: MSVC (Visual Studio)")
     message(STATUS "Target system: Windows")
+    set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/bin)
+    set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/lib)   # static libraries (.a / .lib)
+    set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/lib)   # shared libraries (.so / .dll / .dylib)
     add_compile_options(/W4 /permissive-)
 elseif(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
     message(STATUS "Detected compiler: GCC")
     message(STATUS "Target system: Linux/Unix")
+    set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/bin/${BUILD_TYPE_CACHE})
+    set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/lib/${BUILD_TYPE_CACHE})   # static libraries (.a / .lib)
+    set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/lib/${BUILD_TYPE_CACHE})   # shared libraries (.so / .dll / .dylib)
     set(CMAKE_BUILD_TYPE "${BUILD_TYPE_CACHE}" CACHE STRING "Build type" FORCE)
     add_compile_options(-Wall -Wextra -O2)
 elseif(CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
