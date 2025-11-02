@@ -1,6 +1,7 @@
 # Ignore build and bin directories
 /build/
 /bin/
+/lib/
 */__pycache__/
 
 # Ignore CMake files
