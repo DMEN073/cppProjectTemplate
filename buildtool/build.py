@@ -81,6 +81,7 @@ def fullbuild(target):
     is_msvc = "VisualStudioVersion" in os.environ or "VSINSTALLDIR" in os.environ
     if is_msvc:
         for config in ["Debug", "Release"]:
+            configLogic(config)
             cmd = ["cmake", "--build", __BUILD_DIR, "--config", config]
             if target:
                 cmd += ["--target", target]
