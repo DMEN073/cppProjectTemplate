@@ -11,6 +11,7 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/bin)
 include_directories(${PROJECT_SOURCE_DIR}/include)
 
 message(STATUS "Build type: ${BUILD_TYPE_CACHE}") #this variable is used in msvc compiler because it needs to be passed in during build not configure
+
 if(MSVC)
     message(STATUS "Detected compiler: MSVC (Visual Studio)")
     message(STATUS "Target system: Windows")
@@ -18,6 +19,7 @@ if(MSVC)
 elseif(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
     message(STATUS "Detected compiler: GCC")
     message(STATUS "Target system: Linux/Unix")
+    set(CMAKE_BUILD_TYPE "${BUILD_TYPE_CACHE}" CACHE STRING "Build type" FORCE)
     add_compile_options(-Wall -Wextra -O2)
 elseif(CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
     message(STATUS "Detected compiler: Clang")

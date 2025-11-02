@@ -39,7 +39,7 @@ def clean():
 @click.option("--build-type", "buildType",default="Debug", type=click.Choice(["Debug", "Release"]))        
 def configure(buildType):
     os.makedirs(__BUILD_DIR, exist_ok=True)
-    run_command(["cmake", "-S", ".", "-B", __BUILD_DIR, f"-DCMAKE_BUILD_TYPE={buildType}", f"-DBUILD_TYPE_CACHE={buildType}"])
+    run_command(["cmake", "-S", ".", "-B", __BUILD_DIR, f"-DBUILD_TYPE_CACHE={buildType}"])
 
 @cli.command()
 @click.option("--target", default=None)
