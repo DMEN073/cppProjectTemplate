@@ -9,7 +9,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/bin)
 # Include directories
 include_directories(${PROJECT_SOURCE_DIR}/include)
-
+message(STATUS "Build type: ${CMAKE_BUILD_TYPE}")
 if(MSVC)
     message(STATUS "Detected compiler: MSVC (Visual Studio)")
     message(STATUS "Target system: Windows")
