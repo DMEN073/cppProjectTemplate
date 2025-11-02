@@ -10,6 +10,20 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/bin)
 # Include directories
 include_directories(${PROJECT_SOURCE_DIR}/include)
 
+if(MSVC)
+    message(STATUS "Detected compiler: MSVC (Visual Studio)")
+    message(STATUS "Target system: Windows")
+    add_compile_options(/W4 /permissive-)
+elseif(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
+    message(STATUS "Detected compiler: GCC")
+    message(STATUS "Target system: Linux/Unix")
+    add_compile_options(-Wall -Wextra -O2)
+elseif(CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
+    message(STATUS "Detected compiler: Clang")
+    message(STATUS "Target system: Linux/Unix")
+    add_compile_options(-Wall -Wextra -O2)
+endif()
+
 # Add subdirectories for src, app, and third_party
 add_subdirectory(src)
 add_subdirectory(app)
