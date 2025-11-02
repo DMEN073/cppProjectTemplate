@@ -29,7 +29,6 @@ def cli(ctx, verbose):
 
 
 @cli.command()
-@click.pass_context
 def clean():
     for path in [__BUILD_DIR,__BIN_DIR,__LIB_DIR]:
         if os.path.exists(path):
