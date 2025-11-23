@@ -2,7 +2,7 @@ import click
 import subprocess
 import shutil
 import os
-
+from pathlib import Path
 
 __BUILD_DIR = "build"
 __BIN_DIR = "bin"
@@ -18,31 +18,60 @@ def run_command(cmd):
     echo(f"Running: {' '.join(cmd)}")
     subprocess.check_call(cmd)
 
+def is_msvc(build_dir: Path) -> bool:
+    """Detect if the configured compiler is MSVC."""
+    cache_file = build_dir / "CMakeCache.txt"
+    if not cache_file.exists():
+        return False
+    with open(cache_file, "r") as f:
+        for line in f:
+            if line.startswith("CMAKE_GENERATOR:INTERNAL="):
+                return "Visual Studio" in line
+    return False
+
+def read_build_type(build_dir: Path) -> str:
+    cache_file = build_dir / "CMakeCache.txt"
+    if not cache_file.exists():
+        raise RuntimeError(f"CMakeCache.txt not found in {build_dir}. Please run configure first.")
+
+    with open(cache_file) as f:
+        for line in f:
+            if line.startswith("BUILD_TYPE_CACHE:"):
+                return line.split('=')[1].strip()
+
+    raise RuntimeError(f"BUILD_TYPE_CACHE not found in {cache_file}. Did you pass it during configure?")
+
 def configLogic(buildType):
-    is_msvc = "VisualStudioVersion" in os.environ or "VSINSTALLDIR" in os.environ
-    os.makedirs(__BUILD_DIR, exist_ok=True)
-    if(is_msvc):
-        run_command(["cmake", "-S", ".", "-B", __BUILD_DIR, f"-DBUILD_TYPE_CACHE={buildType}"])
-    else:
-        run_command(["cmake", "-S", ".", "-B", __BUILD_DIR+"/"+buildType, f"-DBUILD_TYPE_CACHE={buildType}"])
+    build_dir = Path(__BUILD_DIR)
+    build_dir.mkdir(parents=True, exist_ok=True)
+    # Base CMake command
+    cmake_cmd = ["cmake", "-S", ".", "-B", str(build_dir)]
+
+    # On Windows, recommend specifying architecture
+    if os.name == "nt":
+        cmake_cmd += ["-A", "x64"]  # works for MSVC
+
+    # ALWAYS write a custom cache variable to remember build type
+    cmake_cmd += [f"-DBUILD_TYPE_CACHE={buildType}"]
+    run_command(cmake_cmd)
 
 def buildLogic(target, build_type = None):
-    if build_type is not None:
-        cmd = ["cmake", "--build", __BUILD_DIR+"/"+build_type]
+    """Build project using the existing configuration."""
+    build_dir = Path(__BUILD_DIR)
+    if not (build_dir / "CMakeCache.txt").exists():
+        raise RuntimeError("CMake has not been configured yet. Run config first.")
+    build_type = read_build_type(build_dir)
+    msvc = is_msvc(build_dir)
+    if msvc:
+        # Multi-config generator: pass --config
+        click.echo("build dir is "+ str(build_dir))
+        cmd = ["cmake", "--build", str(build_dir), "--config", build_type]
     else:
-        cmd = ["cmake", "--build", __BUILD_DIR]
-    is_msvc = "VisualStudioVersion" in os.environ or "VSINSTALLDIR" in os.environ
-    if is_msvc:
-        # Read from CMake cache
-        cache_file = os.path.join(__BUILD_DIR, "CMakeCache.txt")
-        if os.path.exists(cache_file):
-            with open(cache_file, "r") as f:
-                for line in f:
-                    if line.startswith("BUILD_TYPE_CACHE:"):
-                        build_type = line.split('=')[1].strip()
-                        break
-        if build_type:
-            cmd += ["--config", build_type]
+        # Single-config generator: build_type folder
+        click.echo("not msvc build dir is "+ str(build_dir))
+        single_config_build_dir = build_dir / build_type
+        single_config_build_dir.mkdir(parents=True, exist_ok=True)
+        cmd = ["cmake", "--build", str(single_config_build_dir)]
 
     if target:
         cmd += ["--target", target]
